@@ -90,16 +90,23 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+    if (!convo?.id) {
+      return NextResponse.json(
+        { ok: false, error: "Conversation creation failed." },
+        { status: 400 },
+      );
+    }
+    const convoId = convo.id;
 
     let { error: mErr } = await supabaseAdmin.from("messages").insert([
       {
-        conversation_id: convo.id,
+        conversation_id: convoId,
         direction: "out",
         channel: "email",
         body: `Booking confirmed for ${service} at ${new Date(startAt).toLocaleString()}.`,
       },
       {
-        conversation_id: convo.id,
+        conversation_id: convoId,
         direction: "out",
         channel: "email",
         body: "Please complete the intake form before your visit.",
@@ -108,12 +115,12 @@ export async function POST(req: Request) {
     if (mErr?.message?.includes("channel")) {
       const retry = await supabaseAdmin.from("messages").insert([
         {
-          conversation_id: convo.id,
+          conversation_id: convoId,
           direction: "out",
           body: `Booking confirmed for ${service} at ${new Date(startAt).toLocaleString()}.`,
         },
         {
-          conversation_id: convo.id,
+          conversation_id: convoId,
           direction: "out",
           body: "Please complete the intake form before your visit.",
         },
@@ -123,11 +130,11 @@ export async function POST(req: Request) {
     if (mErr?.message?.includes("direction")) {
       const retry = await supabaseAdmin.from("messages").insert([
         {
-          conversation_id: convo.id,
+          conversation_id: convoId,
           body: `Booking confirmed for ${service} at ${new Date(startAt).toLocaleString()}.`,
         },
         {
-          conversation_id: convo.id,
+          conversation_id: convoId,
           body: "Please complete the intake form before your visit.",
         },
       ]);

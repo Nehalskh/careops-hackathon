@@ -14,25 +14,25 @@ export default function OnboardingPage() {
   );
   const [timezone, setTimezone] = useState("Asia/Kolkata");
   const [email, setEmail] = useState("");
-  const [emailChannel, setEmailChannel] = useState(
+  const [emailChannel, setEmailChannel] = useState<boolean>(
     () =>
       (typeof window !== "undefined" &&
         localStorage.getItem("channel_email") !== "false") ||
       true,
   );
-  const [smsChannel, setSmsChannel] = useState(
+  const [smsChannel, setSmsChannel] = useState<boolean>(
     () =>
       (typeof window !== "undefined" &&
         localStorage.getItem("channel_sms") === "true") ||
       false,
   );
-  const [hasBookingType, setHasBookingType] = useState(
+  const [hasBookingType, setHasBookingType] = useState<boolean>(
     () =>
       (typeof window !== "undefined" &&
         localStorage.getItem("setup_booking_type") !== "false") ||
       true,
   );
-  const [hasAvailability, setHasAvailability] = useState(
+  const [hasAvailability, setHasAvailability] = useState<boolean>(
     () =>
       (typeof window !== "undefined" &&
         localStorage.getItem("setup_availability") !== "false") ||
@@ -43,7 +43,7 @@ export default function OnboardingPage() {
       (typeof window !== "undefined" && localStorage.getItem("workspace_id")) ||
       null,
   );
-  const [workspaceSlug, setWorkspaceSlug] = useState(
+  const [workspaceSlug, setWorkspaceSlug] = useState<string>(
     () =>
       (typeof window !== "undefined" && localStorage.getItem("workspace_slug")) ||
       "",

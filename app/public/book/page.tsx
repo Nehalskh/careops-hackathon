@@ -1,9 +1,17 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-export default function PublicBooking() {
+export default function PublicBookingPage() {
+  return (
+    <Suspense fallback={null}>
+      <PublicBooking />
+    </Suspense>
+  );
+}
+
+function PublicBooking() {
   const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

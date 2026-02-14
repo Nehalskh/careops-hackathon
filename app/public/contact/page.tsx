@@ -1,9 +1,17 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
-export default function PublicContact() {
+export default function PublicContactPage() {
+  return (
+    <Suspense fallback={null}>
+      <PublicContact />
+    </Suspense>
+  );
+}
+
+function PublicContact() {
   const searchParams = useSearchParams();
   const [name, setName] = useState("");
   const [emailOrPhone, setEmailOrPhone] = useState("");

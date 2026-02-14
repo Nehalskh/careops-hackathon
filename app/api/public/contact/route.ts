@@ -76,17 +76,24 @@ export async function POST(req: Request) {
     if (cErr) {
       return NextResponse.json({ ok: false, error: cErr.message }, { status: 400 });
     }
+    if (!contact?.id) {
+      return NextResponse.json(
+        { ok: false, error: "Contact creation failed." },
+        { status: 400 },
+      );
+    }
+    const contactId = contact.id;
 
     let { data: convo, error: convErr } = await supabaseAdmin
       .from("conversations")
-      .insert([{ workspace_id, contact_id: contact.id }])
+      .insert([{ workspace_id, contact_id: contactId }])
       .select("id")
       .single();
 
     if (convErr?.message?.includes("workspace_id")) {
       const retry = await supabaseAdmin
         .from("conversations")
-        .insert([{ contact_id: contact.id }])
+        .insert([{ contact_id: contactId }])
         .select("id")
         .single();
       convo = retry.data;
@@ -98,10 +105,17 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+    if (!convo?.id) {
+      return NextResponse.json(
+        { ok: false, error: "Conversation creation failed." },
+        { status: 400 },
+      );
+    }
+    const convoId = convo.id;
 
     let { error: mErr } = await supabaseAdmin.from("messages").insert([
       {
-        conversation_id: convo.id,
+        conversation_id: convoId,
         direction: "out",
         channel: "email",
         body: "Welcome! Thanks for reaching out. How can we help?",
@@ -110,7 +124,7 @@ export async function POST(req: Request) {
     if (mErr?.message?.includes("channel")) {
       const retry = await supabaseAdmin.from("messages").insert([
         {
-          conversation_id: convo.id,
+          conversation_id: convoId,
           direction: "out",
           body: "Welcome! Thanks for reaching out. How can we help?",
         },
@@ -120,7 +134,7 @@ export async function POST(req: Request) {
     if (mErr?.message?.includes("direction")) {
       const retry = await supabaseAdmin.from("messages").insert([
         {
-          conversation_id: convo.id,
+          conversation_id: convoId,
           body: "Welcome! Thanks for reaching out. How can we help?",
         },
       ]);
