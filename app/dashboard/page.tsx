@@ -122,6 +122,9 @@ export default function Dashboard() {
             <Link className="px-3 py-2 rounded bg-slate-800" href="/inbox">
               Inbox
             </Link>
+            <Link className="px-3 py-2 rounded bg-slate-800" href="/bookings">
+              Bookings
+            </Link>
             <Link className="px-3 py-2 rounded bg-slate-800" href="/inventory">
               Inventory
             </Link>
